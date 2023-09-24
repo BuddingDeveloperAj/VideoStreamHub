@@ -1,29 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import { YOUTUBE_API } from '../Utils/config';
 import VideoCard from './VideoCard';
+import { useDispatch, useSelector } from 'react-redux';
+import VideoCardShimmer from '../Shimmers/VideoCardShimmer';
+import { setVideos } from '../Utils/appSlice';
+import { Home } from '../Helper/Home';
 
 const VideoContainer = () => {
-    const [Data, setData] = useState([]);
+    const mainSidebar = useSelector(store => store.app.isMainSideBar);
+    const data = useSelector(store => store.app.videos);
+    const dispatch = useDispatch();
+    const [page, setPage] = useState("")
+    const pageToken = useSelector(store => store.app.pageToken)
+
 
     useEffect(() => {
         async function fetchData() {
-            let response = await fetch(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&maxResults=50&chart=mostPopular&regionCode=IN&key=` + YOUTUBE_API);
-            let jsonData = await response.json();
-            setData(jsonData);
+            try {
+                let popularVideos = await Home(page)
+                dispatch(setVideos(popularVideos));
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
         fetchData();
-    }, []);
+    }, [page, dispatch]);
 
-    if (!Data.items || Data.items.length === 0) {
+    const handleInfiniteScroll = async () => {
+        const innerHeight = window.innerHeight
+        const scrollHeight = window.document.documentElement.scrollHeight
+        const scrollTop = window.document.documentElement.scrollTop
+
+        if (innerHeight + scrollTop + 100 >= scrollHeight && pageToken) {
+            setPage(pageToken)
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleInfiniteScroll)
+        return () => {
+            window.removeEventListener('scroll', handleInfiniteScroll)
+        }
+    })
+
+    if (!data || data.length === 0) {
+        const dummy = new Array(50).fill(0);
         return (
-            <div className='flex'>
+            <div className={`p-2 m-2 grid ${mainSidebar ? 'grid-cols-4' : 'grid-cols-3'} gap-3 grid-flow-dense`}>
+                {dummy.map((_, ind) => <VideoCardShimmer key={ind} />)}
             </div>
         );
     }
 
     return (
-        <div className='p-2 m-2 flex flex-wrap'>
-            {Data.items.map(video => <VideoCard key={video.id} {...video} />)}
+        <div className={`p-2 m-2 grid ${mainSidebar ? 'grid-cols-4' : 'grid-cols-3'} gap-3 grid-flow-dense`}>
+            {data.map((video, ind) => <VideoCard key={ind} {...video} />)}
         </div>
     );
 };

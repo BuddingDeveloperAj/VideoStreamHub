@@ -4,11 +4,11 @@ import { Outlet } from 'react-router-dom'
 
 const Body = () => {
     return (
-        <div className='flex'>
-            <div className='m-2 p-2'>
+        <div className={`flex`}>
+            <div className={`m-2 w-auto`}>
                 <Sidebar />
             </div>
-            <div>
+            <div className={`my-2 flex-grow`} >
                 <Outlet />
             </div>
         </div>

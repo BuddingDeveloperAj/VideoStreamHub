@@ -1,38 +1,87 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import Youtube from "../Asset/preview.png"
 import Profile from "../Asset/profile-user.png"
 import Search from "../Asset/search.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
-import { mainSideBarToggle } from '../Utils/appSlice'
+import { mainSideBarToggle, setVideos } from '../Utils/appSlice'
 import { useNavigate } from 'react-router-dom'
+import { YOUTUBE_API, YOUTUBE_SUGGESTION_URL } from '../Utils/config'
 
 
 const Header = () => {
+    const [searchText, setSearchText] = useState("")
+    const [suggestions, setSuggestions] = useState([])
+    const [showSuggestions, setShowSuggestions] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const inputRef = useRef(null);
 
     const toggleMainSidebar = () => {
         dispatch(mainSideBarToggle())
     }
 
-    const handleHomeClick = () => {
+    const handleHomeClick = async () => {
         navigate("/")
     }
 
+    const handleSearch = async (text) => {
+        const youtubeSearchURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=48&q=${text}&key=${YOUTUBE_API}`
+        let data = await fetch(youtubeSearchURL)
+        let jsonData = await data.json()
+        dispatch(setVideos(jsonData))
+    }
+
+    const handleInputBlur = () => {
+        setTimeout(() => {
+            if (!inputRef.current.contains(document.activeElement)) {
+                setShowSuggestions(false);
+            }
+        }, 100);
+    };
+
+    const searchSuggestions = async (text, op = false) => {
+        setShowSuggestions(true)
+        setSearchText(text)
+        console.log(text)
+        let suggestionData = await fetch(YOUTUBE_SUGGESTION_URL + text)
+        let suggestionJson = await suggestionData.json()
+        setSuggestions(suggestionJson[1])
+        if (op) handleSearch(text)
+    }
+
     return (
-        <div className='flex p-2 shadow-lg sticky bg-white top-0 justify-between' >
-            <div className='flex'>
-                <button className=' px-3 m-2 w-fit hover:bg-gray-200 rounded-full' onClick={toggleMainSidebar}><FontAwesomeIcon className='h-7' icon={faBars} /></button>
-                <button className='cursor-pointer' onClick={handleHomeClick}><span><img className='h-10' src={Youtube} alt="Youtube" /></span></button>
+        <div className='grid grid-cols-8 p-2 shadow-lg sticky bg-white top-0 justify-between' >
+            <div className='flex col-span-2'>
+                <button className=' px-4 m-2 hover:bg-gray-200 rounded-full' onClick={toggleMainSidebar}><FontAwesomeIcon className='h-4' icon={faBars} /></button>
+                <button className='cursor-pointer' onClick={handleHomeClick}><span><img className='h-8' src={Youtube} alt="Youtube" /></span></button>
             </div>
-            <div className='flex w-3/6 my-3'>
-                <input className='border-gray-300 border w-10/12 h-12 rounded-l-full px-4 focus:outline-blue-300' type="text" />
-                <button className='border-gray-300 border rounded-r-full h-12 w-20 hover:bg-gray-200'><img className='h-10 self-center p-2 ml-3' src={Search} alt="search" /></button>
+            <div className='col-span-4'>
+                <div className='flex my-3'>
+                    <input
+                        value={searchText}
+                        ref={inputRef}
+                        onFocus={() => setShowSuggestions(true)}
+                        onBlur={handleInputBlur}
+                        onChange={(e) => searchSuggestions(e.target.value)}
+                        className='border-gray-300 border pl-3 w-10/12 h-10 rounded-l-full px-4 focus:outline-blue-300'
+                        type="text" />
+                    <button onClick={() => handleSearch(searchText)} className='border-gray-300 border rounded-r-full h-10 w-20 hover:bg-gray-200'><img className='h-10 self-center p-2 ml-3' src={Search} alt="search" /></button>
+                </div>
+                {
+                    showSuggestions && suggestions.length ? (
+                        <div className='fixed bg-white py-2 w-5/12 rounded-md border-b shadow-md border-gray-300'>
+                            <ul className=' px-2'>
+                                {
+                                    suggestions.map((suggest, ind) => <li onClick={() => searchSuggestions(suggest, true)} className='py-1 pl-3 shadow-sm rounded-md hover:bg-gray-200 cursor-pointer' key={ind}><span className='pr-3'><FontAwesomeIcon icon={faMagnifyingGlass} size="sm" style={{ color: "#878787", }} /></span>{suggest}</li>)
+                                }
+                            </ul>
+                        </div>) : ''
+                }
             </div>
-            <div className='p-4'>
-                <img className='h-10' src={Profile} alt="profile" />
+            <div className='p-4 col-span-2 '>
+                <img className='h-8' src={Profile} alt="profile" />
             </div>
         </div >
     )
