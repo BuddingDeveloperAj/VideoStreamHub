@@ -5,9 +5,9 @@ import Search from "../Asset/search.png"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch } from 'react-redux'
-import { mainSideBarToggle, setVideos } from '../Utils/appSlice'
+import { mainSideBarToggle } from '../Utils/appSlice'
 import { useNavigate } from 'react-router-dom'
-import { YOUTUBE_API, YOUTUBE_SUGGESTION_URL } from '../Utils/config'
+import { YOUTUBE_SUGGESTION_URL } from '../Utils/config'
 
 
 const Header = () => {
@@ -27,10 +27,7 @@ const Header = () => {
     }
 
     const handleSearch = async (text) => {
-        const youtubeSearchURL = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=48&q=${text}&key=${YOUTUBE_API}`
-        let data = await fetch(youtubeSearchURL)
-        let jsonData = await data.json()
-        dispatch(setVideos(jsonData))
+        navigate("/results?search_query=" + text)
     }
 
     const handleInputBlur = () => {
@@ -44,7 +41,6 @@ const Header = () => {
     const searchSuggestions = async (text, op = false) => {
         setShowSuggestions(true)
         setSearchText(text)
-        console.log(text)
         let suggestionData = await fetch(YOUTUBE_SUGGESTION_URL + text)
         let suggestionJson = await suggestionData.json()
         setSuggestions(suggestionJson[1])
@@ -55,7 +51,7 @@ const Header = () => {
         <div className='grid grid-cols-8 p-2 shadow-lg sticky bg-white top-0 justify-between' >
             <div className='flex col-span-2'>
                 <button className=' px-4 m-2 hover:bg-gray-200 rounded-full' onClick={toggleMainSidebar}><FontAwesomeIcon className='h-4' icon={faBars} /></button>
-                <button className='cursor-pointer' onClick={handleHomeClick}><span><img className='h-8' src={Youtube} alt="Youtube" /></span></button>
+                <button onClick={handleHomeClick}><span><img className='h-8 cursor-pointer' src={Youtube} alt="Youtube" /></span></button>
             </div>
             <div className='col-span-4'>
                 <div className='flex my-3'>
@@ -80,8 +76,8 @@ const Header = () => {
                         </div>) : ''
                 }
             </div>
-            <div className='p-4 col-span-2 '>
-                <img className='h-8' src={Profile} alt="profile" />
+            <div className='p-4 col-span-2 flex justify-end'>
+                <img className='h-8 cursor-pointer' src={Profile} alt="profile" />
             </div>
         </div >
     )

@@ -3,7 +3,7 @@ import VideoCard from './VideoCard';
 import { useDispatch, useSelector } from 'react-redux';
 import VideoCardShimmer from '../Shimmers/VideoCardShimmer';
 import { setVideos } from '../Utils/appSlice';
-import { Home } from '../Helper/Home';
+import { Home } from '../Helper/YoutubeAPI';
 
 const VideoContainer = () => {
     const mainSidebar = useSelector(store => store.app.isMainSideBar);
@@ -12,18 +12,20 @@ const VideoContainer = () => {
     const [page, setPage] = useState("")
     const pageToken = useSelector(store => store.app.pageToken)
 
+    async function fetchData() {
+        try {
+            let popularVideos = await Home(page)
+            dispatch(setVideos(popularVideos));
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                let popularVideos = await Home(page)
-                dispatch(setVideos(popularVideos));
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        }
         fetchData();
-    }, [page, dispatch]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page]);
+
 
     const handleInfiniteScroll = async () => {
         const innerHeight = window.innerHeight
@@ -52,7 +54,8 @@ const VideoContainer = () => {
     }
 
     return (
-        <div className={`p-2 m-2 grid ${mainSidebar ? 'grid-cols-4' : 'grid-cols-3'} gap-3 grid-flow-dense`}>
+
+        <div className={`p-2 m-2 grid ${mainSidebar ? 'grid-cols-4' : 'grid-cols-4'} gap-3 grid-flow-dense`}>
             {data.map((video, ind) => <VideoCard key={ind} {...video} />)}
         </div>
     );

@@ -1,28 +1,21 @@
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
-import { YOUTUBE_API, YOUTUBE_CATEGORIES_URL, YOUTUBE_VIDEOS_BY_CATEGORY } from '../Utils/config';
-import { useDispatch } from 'react-redux';
-import { setVideos } from '../Utils/appSlice';
+import { YOUTUBE_API, YOUTUBE_CATEGORIES_URL } from '../Utils/config';
+import { useNavigate } from 'react-router-dom';
 
 const TagsList = () => {
     const [categories, setCategories] = useState([])
-    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const handleTagClick = async (e) => {
-        console.log(e, "E")
-        let categoryVideos = await fetch(YOUTUBE_VIDEOS_BY_CATEGORY + e.target.value + "&Key=" + YOUTUBE_API)
-        let categoryVidJson = await categoryVideos.json()
-
-        console.log(categoryVidJson)
-        dispatch(setVideos(categoryVidJson.items))
+        navigate("/results?search_query=" + e.target.value)
     }
 
     useEffect(() => {
         const fetchCategroies = async () => {
             let data = await fetch(YOUTUBE_CATEGORIES_URL + YOUTUBE_API)
             let jsonData = await data.json()
-            console.log(jsonData)
             setCategories(jsonData?.items?.reverse())
         }
         fetchCategroies()

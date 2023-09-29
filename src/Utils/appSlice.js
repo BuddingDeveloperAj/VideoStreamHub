@@ -5,7 +5,8 @@ const appSlice = createSlice({
     initialState: {
         isMainSideBar: true,
         videos: [],
-        pageToken: ""
+        pageToken: "",
+        searchQuery: ""
     },
     reducers: {
         mainSideBarToggle: (store) => {
@@ -25,9 +26,12 @@ const appSlice = createSlice({
             store.pageToken = action.payload.nextPageToken
             store.videos = [...store.videos, ...data];
         },
+        setSerachQuery: (store, action) => {
+            store.searchQuery = action.payload
+        }
     }
 })
 
 
-export const { mainSideBarToggle, setVideos } = appSlice.actions
+export const { mainSideBarToggle, setVideos, setSerachQuery } = appSlice.actions
 export default appSlice.reducer

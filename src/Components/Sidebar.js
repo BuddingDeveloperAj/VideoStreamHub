@@ -3,27 +3,34 @@ import { useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFireFlameCurved, faHouse, faClockRotateLeft, faRug, faBoxOpen, faScissors, faStar, faGear } from '@fortawesome/free-solid-svg-icons'
 import { faCircleDot, faClock, faThumbsUp } from '@fortawesome/free-regular-svg-icons'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 const Sidebar = () => {
     const mainSlidebar = useSelector(store => store.app.isMainSideBar)
+    const location = useLocation()
+    const isHomePage = location.pathname === "/"
+
+    if (mainSlidebar && !isHomePage) {
+        return (<></>)
+    }
+
     if (mainSlidebar) {
         return (
-            <div className='w-20 '>
+            <div className='w-20'>
                 <ul>
-                    <Link to="/"><li className='hover:bg-gray-200 p-2 rounded-lg pointer flex flex-col my-2 items-center bg-gray-200' title='Home'>
+                    <Link to="/"><li className='hover:bg-gray-200 p-2 rounded-lg cursor-pointer flex flex-col my-2 items-center bg-gray-200' title='Home'>
                         <button><FontAwesomeIcon icon={faHouse} style={{ color: "#000000", }} /></button>
                         <p className=' text-xs'>Home</p>
                     </li></Link>
-                    <li className='hover:bg-gray-200 p-2 rounded-lg pointer flex flex-col my-2  items-center' title='Shorts'>
+                    <li className='hover:bg-gray-200 p-2 rounded-lg cursor-pointer flex flex-col my-2  items-center' title='Shorts'>
                         <button><FontAwesomeIcon icon={faFireFlameCurved} style={{ color: "#000000", }} /></button>
                         <p className='text-xs'>Shorts</p>
                     </li>
-                    <li className='hover:bg-gray-200 p-2 rounded-lg pointer flex flex-col my-2  items-center' title='Subscriptions'>
+                    <li className='hover:bg-gray-200 p-2 rounded-lg cursor-pointer flex flex-col my-2  items-center' title='Subscriptions'>
                         <button><FontAwesomeIcon icon={faRug} style={{ color: "#000000", }} /></button>
                         <p className=' text-xs'>Subscriptions</p>
                     </li>
-                    <li className='hover:bg-gray-200 p-2 rounded-lg pointer flex flex-col my-2 items-center' title='Library'>
+                    <li className='hover:bg-gray-200 p-2 rounded-lg cursor-pointer flex flex-col my-2 items-center' title='Library'>
                         <button><FontAwesomeIcon icon={faHouse} size='xl' style={{ color: "#000000", }} /></button>
                         <p className=' text-xs'>Library</p>
                     </li>
@@ -33,7 +40,7 @@ const Sidebar = () => {
         )
     }
     return (
-        <div className="flex flex-col w-56 bg-white">
+        <div className={`flex flex-col w-56 min-h-full bg-white ${isHomePage ? '' : 'fixed'}`}>
             <div className='my-2'>
                 <ul>
                     <Link to="/"><li className='hover:bg-gray-300 p-2 rounded-lg pointer  font-semibold bg-gray-200'><button><FontAwesomeIcon className='px-2' icon={faHouse} style={{ color: "#000000", }} /> Home</button></li>
