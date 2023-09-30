@@ -27,7 +27,7 @@ StreamVision is a React-based web application that emulates the experience of st
 ## Demo
 
 A live demo of StreamVision is available at [Demo Video]([https://youtube-ajayravi.netlify.app/watch?v=FS0R1jzBELc](https://www.youtube.com/watch?v=FS0R1jzBELc)).
-A live version of StreamVision is available at [Demo Link]([https://youtube-ajayravi.netlify.app/watch?v=FS0R1jzBELc](https://youtube-ajayravi.netlify.app/)](https://youtube-ajayravi.netlify.app/)).
+A live version of StreamVision is available at [Demo Link]([https://youtube-ajayravi.netlify.app/watch?v=FS0R1jzBELc](https://youtube-ajayravi.netlify.app/)).
 
 [![Alt text]()](https://youtube-ajayravi.netlify.app/watch?v=FS0R1jzBELc)
 
@@ -36,10 +36,8 @@ A live version of StreamVision is available at [Demo Link]([https://youtube-ajay
 
 To run StreamVision locally, follow these steps:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/streamvision.git
-   cd streamvision
+Clone the repository:
+   
 Install dependencies:
 
 ### `npm install`
