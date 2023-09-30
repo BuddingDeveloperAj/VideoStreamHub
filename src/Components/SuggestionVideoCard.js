@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { formatNumber } from '../Helper/CountFomatter';
-import { useSelector } from 'react-redux';
 
-const VideoCard = (props) => {
-    let { statistics: { viewCount = 0 } = { viewCount: 0 }, snippet, videoId } = props;
+const SuggestionVideoCard = (props) => {
+    let { statistics: { viewCount = 0 } = { viewCount: 0 }, snippet, id: videoId } = props;
     let { thumbnails, channelTitle, title } = snippet;
     const [isHovered, setIsHovered] = useState(false);
     const [IframeDimension, setIframeDimension] = useState({
@@ -12,7 +11,6 @@ const VideoCard = (props) => {
     })
     let hoverTimeout;
     const cardRef = useRef(null);
-    const mainSidebar = useSelector(store => store.app.isMainSideBar);
 
     const handleMouseEnter = () => {
         hoverTimeout = setTimeout(() => {
@@ -34,15 +32,15 @@ const VideoCard = (props) => {
     useEffect(() => {
         // Function to set the dimensions of the iframe based on the div's dimensions
         setIframeDimensions()
-    }, [mainSidebar]);
+    }, []);
 
 
     return (
-        <div className="p-2 shadow-lg rounded-lg">
+        <div className="pl-4 pb-2 mb-2  rounded-lg">
             <Link to={"/watch?v=" + videoId}>
-                <div className='flex flex-col'>
+                <div className='grid grid-cols-5 gap-3'>
                     <div ref={cardRef}
-                        className='col-span-1'
+                        className='col-span-2'
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                     >
@@ -65,19 +63,22 @@ const VideoCard = (props) => {
                             />
                         )}
                     </div>
-                    <div className="cursor-pointer">
-                        <p title={title} className='pt-2 font-semibold line-clamp-2'>
-                            {title}
-                        </p>
-                    </div>
-                    <div className=''>
-                        <p className='font-lg'>{channelTitle}</p>
-                        {viewCount > 0 ? <p>{formatNumber(viewCount)} Views </p> : ' '}
+                    <div className='col-span-3 p-2'>
+                        <div className="cursor-pointer">
+                            <p title={title} className='pt-2 font-semibold text-sm line-clamp-2'>
+                                {title}
+                            </p>
+                        </div>
+                        <div>
+                            <p className='text-sm'>{channelTitle}</p>
+                            {viewCount > 0 ? <p className='text-xs'>{formatNumber(viewCount)} Views </p> : ' '}
+                        </div>
                     </div>
                 </div>
+
             </Link>
         </div>
     );
 };
 
-export default VideoCard;
+export default SuggestionVideoCard;

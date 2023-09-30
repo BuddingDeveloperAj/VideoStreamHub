@@ -1,8 +1,10 @@
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react'
-import { YOUTUBE_API, YOUTUBE_CATEGORIES_URL } from '../Utils/config';
+import { YOUTUBE_CATEGORIES_URL } from '../Utils/config';
 import { useNavigate } from 'react-router-dom';
+
+const YOUTUBE_API = process.env.REACT_APP_YOUTUBE_API
 
 const TagsList = () => {
     const [categories, setCategories] = useState([])

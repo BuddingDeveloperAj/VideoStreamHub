@@ -8,9 +8,9 @@ import { Link, useLocation } from 'react-router-dom'
 const Sidebar = () => {
     const mainSlidebar = useSelector(store => store.app.isMainSideBar)
     const location = useLocation()
-    const isHomePage = location.pathname === "/"
+    const isWatchPage = location.pathname === "/watch"
 
-    if (mainSlidebar && !isHomePage) {
+    if (mainSlidebar && isWatchPage) {
         return (<></>)
     }
 
@@ -40,8 +40,8 @@ const Sidebar = () => {
         )
     }
     return (
-        <div className={`flex flex-col w-56 min-h-full bg-white ${isHomePage ? '' : 'fixed'}`}>
-            <div className='my-2'>
+        <div className={`flex flex-col w-56 min-h-full bg-white ${isWatchPage ? 'fixed' : ''}`}>
+            <div className='py-2'>
                 <ul>
                     <Link to="/"><li className='hover:bg-gray-300 p-2 rounded-lg pointer  font-semibold bg-gray-200'><button><FontAwesomeIcon className='px-2' icon={faHouse} style={{ color: "#000000", }} /> Home</button></li>
                     </Link>

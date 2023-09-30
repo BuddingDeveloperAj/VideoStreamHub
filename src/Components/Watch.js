@@ -1,45 +1,56 @@
 import { useSearchParams } from 'react-router-dom'
 import CommentContainer from './CommentContainer'
-import { useEffect, useState } from 'react'
-import { ChannelData, getVideoDetails } from '../Helper/YoutubeAPI'
+import { useEffect, useState, useRef } from 'react'
+import { ChannelData, Home, getVideoDetails } from '../Helper/YoutubeAPI'
 import { faThumbsDown, faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { formatNumber, formatNumberWithCommas } from '../Helper/CountFomatter';
 import dayjs from 'dayjs';
+import SuggestionVideoCard from './SuggestionVideoCard';
 
 export const Watch = () => {
     const [searchParams] = useSearchParams()
     const [pageInfo, setPageInfo] = useState({
         videoData: null,
-        channelData: null
+        channelData: null,
+        suggestionData: []
     })
     const [showFullInfo, setShowFullInfo] = useState(false);
     const videoId = searchParams.get("v")
+    const [IframeDimension, setIframeDimension] = useState({
+        width: 322
+    })
+    const cardRef = useRef(null);
 
-    const screenWidth = window.innerWidth;
-    const iframeWidth = screenWidth * 0.6;
-    const iframeHeight = (iframeWidth / 16) * 9;
+    const setIframeDimensions = () => {
+        const divElement = cardRef.current;
+        const { width } = divElement.getBoundingClientRect();
+        setIframeDimension({ width })
+    };
 
     useEffect(() => {
         (async function () {
             let videoData = await getVideoDetails(videoId)
             let channelData = await ChannelData(videoData.items[0].snippet.channelId)
+            let suggestions = await Home()
+
             setPageInfo((prev) => {
                 return {
                     ...prev,
                     videoData: videoData.items[0],
-                    channelData: channelData.items[0]
+                    channelData: channelData.items[0],
+                    suggestionData: suggestions.items
                 }
             })
         })()
+        setIframeDimensions()
     }, [])
 
-    console.log(pageInfo)
     return (
-        <div className='grid grid-flow-col grid-cols-3 mx-3'>
+        <div className='grid grid-flow-col grid-cols-3 mx-3 p-2 gap-4'>
             <div className='col-span-2'>
-                <div className=''>
-                    <iframe width={iframeWidth} height={iframeHeight} src={"https://www.youtube.com/embed/" + videoId + "?autoplay=1&vq=hd1080"}
+                <div ref={cardRef}>
+                    <iframe width={IframeDimension.width} height={(IframeDimension.width / 16) * 9} src={"https://www.youtube.com/embed/" + videoId + "?autoplay=1&vq=hd1080"}
                         title="Youtube Video"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen></iframe>
@@ -89,8 +100,8 @@ export const Watch = () => {
                     <CommentContainer id={videoId} />
                 </div>
             </div>
-            <div className='col-span-1'>
-
+            <div className='col-span-1 m-2'>
+                {pageInfo.suggestionData.map(video => <SuggestionVideoCard  {...video} />)}
             </div>
         </div>
     )

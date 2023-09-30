@@ -1,4 +1,4 @@
-import { YOUTUBE_API } from "../Utils/config";
+const YOUTUBE_API = process.env.REACT_APP_YOUTUBE_API
 
 export const Home = async (page = "") => {
     try {
@@ -34,10 +34,10 @@ export const ChannelData = async (id) => {
     }
 }
 
-export const getVideoComments = async (id, page) => {
+export const getVideoComments = async (id, page = "") => {
     try {
-        const youtubeChannelUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&${page ? '&pageToken=' + page + '&' : ''}maxResults=48&videoId=${id}&key=` + YOUTUBE_API
-        const data = await fetch(youtubeChannelUrl)
+        const youtubeCommentUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&${page ? 'pageToken=' + page + '&' : ''}maxResults=48&videoId=${id}&key=` + YOUTUBE_API
+        const data = await fetch(youtubeCommentUrl)
         const jsonData = await data.json()
         return jsonData
     } catch (error) {
@@ -47,8 +47,30 @@ export const getVideoComments = async (id, page) => {
 
 export const getVideoDetails = async (id) => {
     try {
-        const youtubeChannelUrl = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${id}&key=` + YOUTUBE_API
-        const data = await fetch(youtubeChannelUrl)
+        const youtubeVideoDetailsUrl = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${id}&key=` + YOUTUBE_API
+        const data = await fetch(youtubeVideoDetailsUrl)
+        const jsonData = await data.json()
+        return jsonData
+    } catch (error) {
+        console.log("Error", error)
+    }
+}
+
+export const getVideoSuggestions = async (channelId) => {
+    try {
+        const youtubeVideoSuggestionUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&allThreadsRelatedToChannelId=${channelId}&maxResults=25&key=` + YOUTUBE_API
+        const data = await fetch(youtubeVideoSuggestionUrl)
+        const jsonData = await data.json()
+        return jsonData
+    } catch (error) {
+        console.log("Error", error)
+    }
+}
+
+export const getLiveChat = async (chatId, page) => {
+    try {
+        const youtubeLiveChatUrl = `https://youtube.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${chatId}&part=snippet%2CcontentDetails%2Cstatistics&maxResults=25&${page ? 'pageToken=' + page + '&' : ''}&key=` + YOUTUBE_API
+        const data = await fetch(youtubeLiveChatUrl)
         const jsonData = await data.json()
         return jsonData
     } catch (error) {
