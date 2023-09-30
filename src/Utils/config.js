@@ -1,4 +1,4 @@
-export const YOUTUBE_SUGGESTION_URL = `https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=`
+export const YOUTUBE_SUGGESTION_URL = `https://clients1.google.com/complete/search?client=youtube&gs_ri=youtube&ds=yt&q=`
 
 export const YOUTUBE_CATEGORIES_URL = "https://youtube.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=&key="
 
