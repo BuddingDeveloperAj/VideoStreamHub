@@ -44,7 +44,7 @@ export const Watch = () => {
             })
         })()
         setIframeDimensions()
-    }, [])
+    }, [videoId])
 
     return (
         <div className='grid grid-flow-col grid-cols-3 mx-3 p-2 gap-4'>

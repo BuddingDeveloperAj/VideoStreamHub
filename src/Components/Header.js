@@ -41,7 +41,26 @@ const Header = () => {
         }, 100);
     };
 
+
+
     useEffect(() => {
+        const debounceSearch = async (searchText) => {
+            let suggestions = []
+            if (cache[searchText]) {
+                suggestions = cache[searchText]
+            }
+            else {
+                let suggestionData = await fetch(YOUTUBE_SUGGESTION_URL + searchText)
+                let data = await suggestionData.json()
+                suggestions = data[1]
+                function addSuggestiontoSlice() {
+                    dispatch(addSuggestion({ [`${searchText}`]: suggestions }))
+                }
+                addSuggestiontoSlice()
+            }
+            setSuggestions(suggestions)
+        }
+
         let timer
         timer = setTimeout(() => {
             if (searchText) {
@@ -50,26 +69,8 @@ const Header = () => {
         }, 200);
 
         return () => clearTimeout(timer)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchText])
-
-    const debounceSearch = async (searchText) => {
-        let suggestions = []
-        if (cache[searchText]) {
-            suggestions = cache[searchText]
-        }
-        else {
-            let suggestionData = await fetch(YOUTUBE_SUGGESTION_URL + searchText)
-            let data = await suggestionData.json()
-            suggestions = data[1]
-            function addSuggestiontoSlice() {
-                console.log({ [`${searchText}`]: suggestions })
-                dispatch(addSuggestion({ [`${searchText}`]: suggestions }))
-            }
-            addSuggestiontoSlice()
-        }
-
-        setSuggestions(suggestions)
-    }
 
     const searchSuggestions = async (text, op = false) => {
         setShowSuggestions(true)

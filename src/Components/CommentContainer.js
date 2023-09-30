@@ -14,6 +14,7 @@ const CommentContainer = ({ id: videoId }) => {
             page.current = comments.nextPageToken;
             setComments((prev) => [...prev, ...comments.items]);
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [commentPage]);
 
     const handleInfiniteScroll = async () => {
