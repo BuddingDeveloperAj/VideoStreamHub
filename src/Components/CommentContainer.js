@@ -11,8 +11,10 @@ const CommentContainer = ({ id: videoId }) => {
     useEffect(() => {
         (async function () {
             let comments = await getVideoComments(videoId, commentPage);
-            page.current = comments.nextPageToken;
-            setComments((prev) => [...prev, ...comments.items]);
+            if (comments && comments.items && comments.items.length) {
+                page.current = comments?.nextPageToken;
+                setComments((prev) => [...prev, ...comments.items]);
+            }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [commentPage]);
