@@ -56,8 +56,8 @@ const Header = () => {
                     if (!ele.split('"')[1] || index === 1) return;
                     return suggestions.push(ele.split('"')[1]);
                 });
+                suggestions = suggestions.length > 10 ? suggestions.slice(0, 10) : suggestions
 
-                console.log(suggestionData)
                 function addSuggestiontoSlice() {
                     dispatch(addSuggestion({ [`${searchText}`]: suggestions }))
                 }
