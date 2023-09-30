@@ -27,7 +27,7 @@ StreamVision is a React-based web application that emulates the experience of st
 ## Demo
 
 A live demo of StreamVision is available at [Demo Video](https://youtube-ajayravi.netlify.app/watch?v=FS0R1jzBELc).
-A live version of StreamVision is available at [Demo Link]([https://youtube-ajayravi.netlify.app/watch?v=FS0R1jzBELc](https://youtube-ajayravi.netlify.app/)).
+A live version of StreamVision is available at [Demo Link](https://youtube-ajayravi.netlify.app/watch?v=FS0R1jzBELc](https://youtube-ajayravi.netlify.app/)).
 
 ## Installation
 
