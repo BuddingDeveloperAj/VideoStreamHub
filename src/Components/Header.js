@@ -50,7 +50,13 @@ const Header = () => {
                 suggestions = cache[searchText]
             }
             else {
-                let suggestionData = await fetch(YOUTUBE_SUGGESTION_URL + searchText)
+                let suggestionData = await fetch(YOUTUBE_SUGGESTION_URL + searchText,
+                    {
+                        mode: 'cors',
+                        headers: {
+                            'Access-Control-Allow-Origin': '*'
+                        }
+                    })
                 let data = await suggestionData.json()
                 suggestions = data[1]
                 function addSuggestiontoSlice() {
