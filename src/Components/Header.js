@@ -50,13 +50,14 @@ const Header = () => {
                 suggestions = cache[searchText]
             }
             else {
-                let suggestionData = await fetch(YOUTUBE_SUGGESTION_URL + searchText, { mode: 'no-cors' })
+                let suggestionData = await fetch(YOUTUBE_SUGGESTION_URL + searchText)
                 let data = await suggestionData.text()
-                console.log(data)
                 data.split('[').forEach((ele, index) => {
                     if (!ele.split('"')[1] || index === 1) return;
                     return suggestions.push(ele.split('"')[1]);
                 });
+
+                console.log(suggestionData)
                 function addSuggestiontoSlice() {
                     dispatch(addSuggestion({ [`${searchText}`]: suggestions }))
                 }
