@@ -2,7 +2,7 @@
 
 StreamVision is a React-based web application that emulates the experience of streaming and viewing videos, similar to YouTube. It employs various features and technologies to create an engaging and dynamic user experience.
 
-## Features
+## Features 
 
 - **Infinite Scrolling:** Videos are fetched and displayed using an infinite scrolling mechanism, allowing users to seamlessly explore an extensive video library.
 
